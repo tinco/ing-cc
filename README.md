@@ -16,4 +16,5 @@ uv run ing-cc
 uv run ing-cc --input pdfs --output out
 ```
 
-Each CSV is named `<MM>-<YYYY>.csv` and contains: `date,name,description,notes,type,amount`.
+- Each PDF produces exactly one CSV, named `<YYYY>-<MM>.csv` based on the statement period start date.
+- Columns: `date,name,notes,type,amount`.

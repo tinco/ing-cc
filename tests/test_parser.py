@@ -1,7 +1,7 @@
 from decimal import Decimal
 from pathlib import Path
 
-from ing_cc.parser import parse_pdf, write_csvs
+from ing_cc.parser import parse_pdf, parse_statement, write_csv
 
 
 def test_parse_pdf_extracts_transactions():
@@ -23,17 +23,22 @@ def test_parse_pdf_extracts_transactions():
 
 
 def test_write_csvs_creates_monthly_files(tmp_path):
-    transactions = parse_pdf(Path("pdfs/AFSCHRIFT.pdf"))
+    statement = parse_statement(Path("pdfs/AFSCHRIFT.pdf"))
 
-    write_csvs(transactions, tmp_path)
+    csv_path = write_csv(statement, tmp_path)
 
-    june_file = tmp_path / "06-2023.csv"
-    july_file = tmp_path / "07-2023.csv"
+    assert csv_path.name == "2023-06.csv"
+    lines = csv_path.read_text(encoding="utf-8").splitlines()
+    assert lines[0] == "date,name,notes,type,amount"
+    assert any("30-06-2023" in line for line in lines[1:])
+    # July transactions in the same statement also belong in this CSV
+    assert any("03-07-2023" in line for line in lines[1:])
 
-    assert june_file.exists()
-    assert july_file.exists()
 
-    june_lines = june_file.read_text(encoding="utf-8").splitlines()
-    assert june_lines[0] == "date,name,description,notes,type,amount"
-    assert any("30-06-2023" in line for line in june_lines[1:])
+def test_no_header_text_leaks_into_notes(tmp_path):
+    statement = parse_statement(Path("pdfs/AFSCHRIFT.pdf"))
+    write_csv(statement, tmp_path)
 
+    for csv_path in tmp_path.glob("*.csv"):
+        content = csv_path.read_text(encoding="utf-8")
+        assert "Omschrijving" not in content

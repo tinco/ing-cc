@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
-from .parser import parse_pdf, write_csvs
+from .parser import parse_statement, write_csv
 
 
 def main() -> None:
@@ -24,8 +24,6 @@ def main() -> None:
     if not pdf_paths:
         raise SystemExit(f"No PDF statements found in {args.input}")
 
-    all_transactions = []
     for pdf in pdf_paths:
-        all_transactions.extend(parse_pdf(pdf))
-
-    write_csvs(all_transactions, args.output)
+        statement = parse_statement(pdf)
+        write_csv(statement, args.output)
