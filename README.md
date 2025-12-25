@@ -1,20 +1,26 @@
-ING credit card statement to CSV converter
-==========================================
+ING Credit Card PDF to CSV
+==========================
 
-Usage
------
+This is a small Python tool to convert ING credit card statement PDFs into CSV files. Each PDF becomes one CSV named `<YYYY>-<MM>.csv`, based on the statement period start date. Columns: `date,name,notes,type,amount`.
 
-- Convert all PDFs in `pdfs/` and write monthly CSVs to the project root:
+Development notes
+- Written by OpenAI Codex.
+- Built in a test-driven manner (`uv run pytest`).
+- One statement month was manually checked for correctness by a human. Use at your own risk; no warranties are provided.
 
-```
-uv run ing-cc
-```
-
-- Choose input/output directories:
-
+Quickstart (with uv)
+--------------------
+1) Ensure `uv` is installed (see https://github.com/astral-sh/uv for installation).
+2) In the project root, run:
 ```
 uv run ing-cc --input pdfs --output out
 ```
+   - `--input` defaults to `pdfs/`.
+   - `--output` defaults to the current directory.
+3) CSV files will appear in the output directory, one per PDF.
 
-- Each PDF produces exactly one CSV, named `<YYYY>-<MM>.csv` based on the statement period start date.
-- Columns: `date,name,notes,type,amount`.
+Testing
+-------
+```
+uv run pytest
+```

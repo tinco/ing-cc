@@ -42,3 +42,18 @@ def test_no_header_text_leaks_into_notes(tmp_path):
     for csv_path in tmp_path.glob("*.csv"):
         content = csv_path.read_text(encoding="utf-8")
         assert "Omschrijving" not in content
+
+
+def test_newer_format_without_space_between_sign_and_amount(tmp_path):
+    statement = parse_statement(Path("pdfs/AFSCHRIFT-1.pdf"))
+    assert statement.label == "2025-11"
+    assert len(statement.transactions) > 0
+
+    first = statement.transactions[0]
+    assert first.amount == Decimal("688.77")
+    assert first.type == "Incasso"
+    assert "Kaartnummer" in first.notes
+
+    csv_path = write_csv(statement, tmp_path)
+    content = csv_path.read_text(encoding="utf-8")
+    assert "688.77" in content  # amount captured even without space
