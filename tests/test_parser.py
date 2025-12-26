@@ -73,3 +73,12 @@ def test_thousands_separator_amounts_are_parsed(tmp_path):
     assert "1231.28" in flat
     assert "180.00" in flat
     assert "7.20" in flat
+
+
+def test_correctie_transaction_is_captured(tmp_path):
+    statement = parse_statement(Path("pdfs/AFSCHRIFT-28.pdf"))
+    assert statement.label == "2023-09"
+    assert any(tx.type == "Correctie" and tx.amount == Decimal("1733.49") for tx in statement.transactions)
+    csv_path = write_csv(statement, tmp_path)
+    content = csv_path.read_text(encoding="utf-8")
+    assert "1733.49" in content.replace(",", ".")
