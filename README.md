@@ -7,6 +7,7 @@ Development notes
 - Written by OpenAI Codex.
 - Built in a test-driven manner (`uv run pytest`).
 - One statement month was manually checked for correctness by a human. Use at your own risk; no warranties are provided.
+- Two years of transactions has been parsed and validated to be balanced.
 
 Quickstart (with uv)
 --------------------
