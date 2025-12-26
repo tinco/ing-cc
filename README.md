@@ -24,3 +24,11 @@ Testing
 ```
 uv run pytest
 ```
+
+Analysis
+--------
+After generating CSVs (e.g., into `out/`), you can produce a per-statement summary JSON:
+```
+uv run ing-cc-analysis --input out --output analysis
+```
+This writes `analysis/summary.json` with, for each statement, the total spend (sum of outgoing payments), amount settled via `Incasso`, and the net difference (should be ~0).

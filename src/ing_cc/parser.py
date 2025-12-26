@@ -27,9 +27,9 @@ class Statement:
 TRANSACTION_PATTERN = re.compile(
     r"^(?P<date>\d{2}-\d{2}-\d{4})\s+"
     r"(?P<name>.+?)\s+"
-    r"(?P<type>Betaling|Ontvangst|Incasso)\s+"
+    r"(?P<type>Betaling|Ontvangst|Incasso|Geldopname|Kosten)\s+"
     r"(?P<sign>[+-])\s*"
-    r"(?P<amount>\d+[.,]\d{2})$"
+    r"(?P<amount>\d[\d.,]*\d{2})$"
 )
 
 FOOTER_MARKERS = (

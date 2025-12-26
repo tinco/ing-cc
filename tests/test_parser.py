@@ -57,3 +57,19 @@ def test_newer_format_without_space_between_sign_and_amount(tmp_path):
     csv_path = write_csv(statement, tmp_path)
     content = csv_path.read_text(encoding="utf-8")
     assert "688.77" in content  # amount captured even without space
+
+
+def test_thousands_separator_amounts_are_parsed(tmp_path):
+    statement = parse_statement(Path("pdfs/AFSCHRIFT-21.pdf"))
+    # First transaction is an Incasso with a thousands separator.
+    assert any(tx.type == "Incasso" and tx.amount == Decimal("1231.28") for tx in statement.transactions)
+    # Cash withdrawal and fee should also be captured.
+    assert any(tx.type == "Geldopname" and tx.amount == Decimal("-180.00") for tx in statement.transactions)
+    assert any(tx.type == "Kosten" and tx.amount == Decimal("-7.20") for tx in statement.transactions)
+
+    csv_path = write_csv(statement, tmp_path)
+    data = csv_path.read_text(encoding="utf-8")
+    flat = data.replace(",", ".")
+    assert "1231.28" in flat
+    assert "180.00" in flat
+    assert "7.20" in flat
